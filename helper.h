@@ -15,10 +15,10 @@
 
 class CLParameters {
 public:
-	std::string dir;
-	std::string ip;
-	uint16_t    port;
-	uint16_t    workers;
+    std::string dir;
+    std::string ip;
+    uint16_t    port;
+    uint16_t    workers;
 };
 
 //+----------------------------------------------------------------------------+

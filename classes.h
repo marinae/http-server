@@ -27,11 +27,11 @@ enum RequestType { HEAD, GET, POST };
 
 class HTTPRequest {
 public:
-	RequestType type;
-	std::string file;
-	bool        ok;
+    RequestType type;
+    std::string file;
+    bool        ok;
 
-	HTTPRequest(std::string buf);
+    HTTPRequest(std::string buf);
 };
 
 //+----------------------------------------------------------------------------+
@@ -40,11 +40,11 @@ public:
 
 class Worker {
 public:
-	int    pid;
-	int    fd;
-	size_t clients;
+    int    pid;
+    int    fd;
+    size_t clients;
 
-	Worker(int pid, int fd, size_t clients) : pid(pid), fd(fd), clients(clients) {}
+    Worker(int pid, int fd, size_t clients) : pid(pid), fd(fd), clients(clients) {}
 };
 
 typedef std::vector<Worker> ServWorkers;
@@ -55,18 +55,18 @@ typedef std::vector<Worker> ServWorkers;
 
 class Client {
 public:
-	/* Events */
-	struct event *readEv;
-	struct event *writeEv;
+    /* Events */
+    struct event *readEv;
+    struct event *writeEv;
 
-	/* In/out buffers */
-	std::string inBuf;
-	std::string outBuf;
+    /* In/out buffers */
+    std::string inBuf;
+    std::string outBuf;
 
-	Client() {}
-	Client(struct event *readEv, struct event *writeEv) :
-		readEv(readEv), writeEv(writeEv) {}
-	~Client();
+    Client() {}
+    Client(struct event *readEv, struct event *writeEv) :
+        readEv(readEv), writeEv(writeEv) {}
+    ~Client();
 };
 
 typedef std::unordered_map<int, Client *> ServClients;

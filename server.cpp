@@ -31,7 +31,7 @@ void HTTPServer::start() {
     /* Open log file */
     openlog("log", LOG_PID, LOG_USER);
 
-	/* Create TCP socket for handling incoming connections */
+    /* Create TCP socket for handling incoming connections */
     master = configSocket(params);
     assert(master != -1);
 
@@ -265,8 +265,8 @@ void HTTPServer::setResponse(int fd, std::string header) {
     printf("server: %s request for file %s (%s)\n", typeStr.c_str(), req.file.c_str(), okStr.c_str());
     #endif
 
-	/* Compose response to request */
-	std::string resp = composeResponse(req, params.dir);
+    /* Compose response to request */
+    std::string resp = composeResponse(req, params.dir);
     
     assert(resp.size() > 0);
     assert(clients.find(fd) != clients.end());
@@ -288,9 +288,9 @@ void HTTPServer::setResponse(int fd, std::string header) {
 
 void HTTPServer::finishReading(int fd) {
 
-	#ifdef _DEBUG_MODE_
-	printf("client %d: reading finished\n", fd);
-	#endif
+    #ifdef _DEBUG_MODE_
+    printf("client %d: reading finished\n", fd);
+    #endif
     
     assert(clients.find(fd) != clients.end());
     event_del(clients[fd]->readEv);
@@ -315,9 +315,9 @@ void HTTPServer::finishReading(int fd) {
 
 void HTTPServer::finishWriting(int fd) {
 
-	#ifdef _DEBUG_MODE_
-	printf("client %d: writing finished\n", fd);
-	#endif
+    #ifdef _DEBUG_MODE_
+    printf("client %d: writing finished\n", fd);
+    #endif
 
     assert(clients.find(fd) != clients.end());
     event_del(clients[fd]->writeEv);
@@ -359,15 +359,15 @@ void HTTPServer::pushToInBuf(int fd, std::string str) {
     //printf("server: string [%s] of size=%lu pushed to buffer %d\n", str.c_str(), str.size(), fd);
     #endif
 
-	assert(clients.find(fd) != clients.end());
-	size_t len = clients[fd]->inBuf.size();
+    assert(clients.find(fd) != clients.end());
+    size_t len = clients[fd]->inBuf.size();
 
-	if (len + str.size() <= MAX_INBUF_SIZE) {
-		clients[fd]->inBuf.append(str);
-	} else {
-		/* Overflow */
-		clients[fd]->inBuf.clear();
-	}
+    if (len + str.size() <= MAX_INBUF_SIZE) {
+        clients[fd]->inBuf.append(str);
+    } else {
+        /* Overflow */
+        clients[fd]->inBuf.clear();
+    }
 }
 
 //+----------------------------------------------------------------------------+

@@ -6,7 +6,7 @@
 
 CLParameters parseParams(int argc, char **argv) {
 
-	CLParameters params = {"", "", 0, 0};
+    CLParameters params = {"", "", 0, 0};
 
     char p;
     while ((p = getopt(argc, argv, "d:h:p:w:")) != -1) {
@@ -24,7 +24,7 @@ CLParameters parseParams(int argc, char **argv) {
         }
     }
 
-	return params;
+    return params;
 }
 
 //+----------------------------------------------------------------------------+
@@ -33,7 +33,7 @@ CLParameters parseParams(int argc, char **argv) {
 
 int configSocket(CLParameters params) {
     
-	/* Create TCP socket for handling incoming connections */
+    /* Create TCP socket for handling incoming connections */
     int masterSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (masterSocket == -1) {
         std::cout << strerror(errno) << std::endl;

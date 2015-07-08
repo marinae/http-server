@@ -6,16 +6,16 @@
 
 void accept_cb(evutil_socket_t evs, short events, void *ptr) {
 
-	#ifdef _DEBUG_MODE_
-	printf("server: accept_cb\n");
-	#endif
+    #ifdef _DEBUG_MODE_
+    printf("server: accept_cb\n");
+    #endif
 
-	/* Last parameter is http server object */
-	HTTPServer *srv = (HTTPServer *)ptr;
+    /* Last parameter is http server object */
+    HTTPServer *srv = (HTTPServer *)ptr;
 
     /* Accept incoming connection */
-	int fd = accept(evs, 0, 0);
-	srv->addClient(fd);
+    int fd = accept(evs, 0, 0);
+    srv->addClient(fd);
 }
 
 //+----------------------------------------------------------------------------+
@@ -23,12 +23,12 @@ void accept_cb(evutil_socket_t evs, short events, void *ptr) {
 //+----------------------------------------------------------------------------+
 
 void worker_cb(evutil_socket_t evs, short events, void *ptr) {
-	
-	int client_fd;
+    
+    int client_fd;
 
-	ssize_t size;
+    ssize_t size;
 
-	int BUF_LEN = 32;
+    int BUF_LEN = 32;
     char buf[BUF_LEN];
 
     struct msghdr   msg;
@@ -72,14 +72,14 @@ void worker_cb(evutil_socket_t evs, short events, void *ptr) {
         client_fd = -1;
     }
 
-	if (client_fd != -1) {
+    if (client_fd != -1) {
 
-		/* Last parameter is http server object */
-		HTTPServer *srv = (HTTPServer *)ptr;
+        /* Last parameter is http server object */
+        HTTPServer *srv = (HTTPServer *)ptr;
 
-		/* Add client to worker process */
-		srv->addWorkerClient(client_fd);
-	}
+        /* Add client to worker process */
+        srv->addWorkerClient(client_fd);
+    }
 }
 
 //+----------------------------------------------------------------------------+
@@ -88,34 +88,34 @@ void worker_cb(evutil_socket_t evs, short events, void *ptr) {
 
 void read_cb(evutil_socket_t evs, short events, void *ptr) {
 
-	#ifdef _DEBUG_MODE_
-	printf("client %d: read_cb\n", evs);
-	//syslog(LOG_DEBUG, "client %d: read_cb\n", evs);
-	#endif
+    #ifdef _DEBUG_MODE_
+    printf("client %d: read_cb\n", evs);
+    //syslog(LOG_DEBUG, "client %d: read_cb\n", evs);
+    #endif
 
-	/* Last parameter is http server object */
-	HTTPServer *srv = (HTTPServer *)ptr;
+    /* Last parameter is http server object */
+    HTTPServer *srv = (HTTPServer *)ptr;
 
-	/* Read from socket */
-	char buf[BUF_SIZE];
-	ssize_t len = recv(evs, buf, BUF_SIZE, 0);
+    /* Read from socket */
+    char buf[BUF_SIZE];
+    ssize_t len = recv(evs, buf, BUF_SIZE, 0);
 
-	if (len == 0) {
-		/* Close connection */
-		srv->finishReading(evs);
+    if (len == 0) {
+        /* Close connection */
+        srv->finishReading(evs);
 
-	} else if (len != -1) {
+    } else if (len != -1) {
 
-		/* Add string from inBuf */
-		std::string header(buf, len);
-		std::string inBuf = srv->getInBuf(evs);
+        /* Add string from inBuf */
+        std::string header(buf, len);
+        std::string inBuf = srv->getInBuf(evs);
 
-		if (!inBuf.empty())
-			header = inBuf + header;
+        if (!inBuf.empty())
+            header = inBuf + header;
 
-		/* Set response to client */
-		srv->setResponse(evs, header);
-	}
+        /* Set response to client */
+        srv->setResponse(evs, header);
+    }
 }
 
 //+----------------------------------------------------------------------------+
@@ -124,55 +124,55 @@ void read_cb(evutil_socket_t evs, short events, void *ptr) {
 
 void write_cb(evutil_socket_t evs, short events, void *ptr) {
 
-	#ifdef _DEBUG_MODE_
-	printf("client %d: write_cb\n", evs);
-	#endif
+    #ifdef _DEBUG_MODE_
+    printf("client %d: write_cb\n", evs);
+    #endif
 
-	/* Last parameter is http server object */
-	HTTPServer *srv = (HTTPServer *)ptr;
+    /* Last parameter is http server object */
+    HTTPServer *srv = (HTTPServer *)ptr;
 
-	bool err_flag = false;
+    bool err_flag = false;
 
-	/* Answer with a string from outBuf */
-	std::string resp = srv->getResponse(evs);
-	assert(resp.size() > 0);
+    /* Answer with a string from outBuf */
+    std::string resp = srv->getResponse(evs);
+    assert(resp.size() > 0);
 
-	while (!resp.empty() && !err_flag) {
+    while (!resp.empty() && !err_flag) {
 
-		/* Send response */
-		ssize_t sent = send(evs, resp.c_str(), resp.size(), 0);
+        /* Send response */
+        ssize_t sent = send(evs, resp.c_str(), resp.size(), 0);
 
-		#ifdef _DEBUG_MODE_
-		printf("server: %zd/%zd bytes sent to client %d\n", sent, resp.size(), evs);
-		#endif
+        #ifdef _DEBUG_MODE_
+        printf("server: %zd/%zd bytes sent to client %d\n", sent, resp.size(), evs);
+        #endif
 
-		if (sent > 0) {
-			/* Decrease string size */
-			resp = resp.substr(sent);
+        if (sent > 0) {
+            /* Decrease string size */
+            resp = resp.substr(sent);
 
-		} else {
-			err_flag = true;
-		}
-	}
+        } else {
+            err_flag = true;
+        }
+    }
 
-	if (err_flag) {
+    if (err_flag) {
 
-		if (errno != EAGAIN) {
-			/* Remove write event for client */
-			srv->finishWriting(evs);
-		} else {
-			srv->pushToOutBuf(evs, resp);
-		}
+        if (errno != EAGAIN) {
+            /* Remove write event for client */
+            srv->finishWriting(evs);
+        } else {
+            srv->pushToOutBuf(evs, resp);
+        }
 
-	} else {
-		std::string str = srv->getInBuf(evs);
+    } else {
+        std::string str = srv->getInBuf(evs);
 
-		if (str.empty()) {
-			/* Remove write event for client */
-			srv->finishWriting(evs);
+        if (str.empty()) {
+            /* Remove write event for client */
+            srv->finishWriting(evs);
 
-		} else {
-			srv->setResponse(evs, str);
-		}
-	}
+        } else {
+            srv->setResponse(evs, str);
+        }
+    }
 }

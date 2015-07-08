@@ -8,8 +8,8 @@
 
 int main(int argc, char **argv) {
 
-	/* Parse server parameters */
-	CLParameters params = parseParams(argc, argv);
+    /* Parse server parameters */
+    CLParameters params = parseParams(argc, argv);
 
     if (params.dir.empty() || params.ip.empty() || params.port == 0) {
         #ifdef _DEBUG_MODE_
@@ -31,5 +31,5 @@ int main(int argc, char **argv) {
     /* Start server */
     srv.start();
 
-	return 0;
+    return 0;
 }

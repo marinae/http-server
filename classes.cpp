@@ -7,7 +7,7 @@
 HTTPRequest::HTTPRequest(std::string buf) {
 
     assert(!buf.empty());
-	parseRequest(buf, type, file, ok);
+    parseRequest(buf, type, file, ok);
 }
 
 //+----------------------------------------------------------------------------+
@@ -16,14 +16,14 @@ HTTPRequest::HTTPRequest(std::string buf) {
 
 Client::~Client() {
 
-	if (readEv) {
-		event_free(readEv);
-		readEv = NULL;
-	}
-	if (writeEv) {
-		event_free(writeEv);
-		writeEv = NULL;
-	}
+    if (readEv) {
+        event_free(readEv);
+        readEv = NULL;
+    }
+    if (writeEv) {
+        event_free(writeEv);
+        writeEv = NULL;
+    }
 }
 
 //+----------------------------------------------------------------------------+

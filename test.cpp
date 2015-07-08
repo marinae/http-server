@@ -76,5 +76,5 @@ int main() {
     str.append(post);
     send(slave, str.c_str(), str.size(), 0);*/
 
-	return 0;
+    return 0;
 }
